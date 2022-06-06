@@ -6,8 +6,6 @@ const cryptoApiHeaders = {
   };
 
 const baseUrl = 'https://coinranking1.p.rapidapi.com';
-let id = "" ;
-
 
 const options  = ({
   method: 'GET',
@@ -15,19 +13,13 @@ const options  = ({
   headers: cryptoApiHeaders
 });
 
-function changeId(coinId)
-{
-  id = coinId;
-  console.log(id);
-  
-}
 
 const createRequest = (url) => ({method: 'GET', url, headers: cryptoApiHeaders });
 
 
 export const cryptoApi = createApi({
     reducerPath: 'cryptoApi',
-    baseQuery: fetchBaseQuery(baseUrl),
+    baseQuery: fetchBaseQuery({baseUrl}),
 
     endpoints: (builder) => ({
         getCryptos: builder.query({
@@ -35,14 +27,26 @@ export const cryptoApi = createApi({
         }),
 
         getCryptoDetails: builder.query({
-          query: (coinId) => createRequest(baseUrl + "/coin/"  + coinId),
+          query: (coinId) => createRequest(`/coin/${coinId}`),
+        }),
+
+        getCryptoHistory: builder.query({
+          query:  (coinId) => createRequest(`coin/${coinId.coinId}/history`),
+        }),
+
+        getExchanges: builder.query({
+          query: () => createRequest('/exchanges'),
         }),
       }),
+
+      
 });
 
 
 
 export const {
-    useGetCryptosQuery,
-    useGetCryptoDetailsQuery,
-  } = cryptoApi;
+  useGetCryptosQuery,
+  useGetCryptoDetailsQuery,
+  useGetExchangesQuery,
+  useGetCryptoHistoryQuery,
+} = cryptoApi;
